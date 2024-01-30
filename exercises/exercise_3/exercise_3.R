@@ -151,9 +151,14 @@ conf_matrix_rf = confusionMatrix(table(predictions_rf, test_data$separation_indi
 conf_matrix_data_rf = as.matrix(conf_matrix_rf$table)
 
 
+library(pROC)
+
 roc_curve_rf = roc(test_data$separation_indicator, predictions_rf)
-roc_plot_rf = plot(roc_curve_rf, main = "ROC Curve", col = "blue")
-auc(roc_curve_rf)
+
+plot(0, type="n", xlim=c(0, 1), ylim=c(0, 1), xlab="False Positive Rate", ylab="True Positive Rate", main="ROC Curve")
+lines(roc_curve_rf, col="blue")
+auc_value = auc(roc_curve_rf)
+text(0.6, 0.2, paste("AUC =", round(auc_value, 2)))
 
 ggroc(list(logistic = roc_curve, random_forest = roc_curve_rf))+
   labs(title = "Comparison of two models")
